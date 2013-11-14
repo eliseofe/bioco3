@@ -1,38 +1,32 @@
 package be.kuleuven.bioco3.selforg;
 
-import java.util.Collection;
+import org.apache.commons.math3.random.MersenneTwister;
+import org.apache.commons.math3.random.RandomGenerator;
 
 import rinde.sim.core.model.pdp.PDPModel;
 import rinde.sim.core.model.road.RoadModel;
-import rinde.sim.event.Listener;
 import rinde.sim.pdptw.common.DefaultParcel;
 import rinde.sim.pdptw.common.DefaultVehicle;
+import rinde.sim.util.SupplierRng;
+import rinde.sim.util.SupplierRng.DefaultSupplierRng;
 
-public class SituatedCommunitorRandom implements SituatedCommunicator {
+public class SituatedCommunitorRandom extends SituatedCommunicator {
 
-	public void init(RoadModel rm, PDPModel pm, DefaultVehicle v) {
-		// TODO Auto-generated method stub
-
+	private final RandomGenerator rng;
+	
+	public SituatedCommunitorRandom(long seed) {
+		rng = new MersenneTwister(seed);
 	}
 
-	public void addUpdateListener(Listener l) {
-		// TODO Auto-generated method stub
-
-	}
-
-	public void waitFor(DefaultParcel p) {
-		// TODO Auto-generated method stub
-
-	}
-
-	public void claim(DefaultParcel p) {
-		// TODO Auto-generated method stub
-
-	}
-
-	public Collection<DefaultParcel> getParcels() {
-		// TODO Auto-generated method stub
-		return null;
-	}
+	// not needed
+	public void waitFor(DefaultParcel p) {}
+	
+	public static SupplierRng<SituatedCommunitorRandom> supplier() {
+		return new DefaultSupplierRng<SituatedCommunitorRandom>() {
+			public SituatedCommunitorRandom get(long seed) {
+				return new SituatedCommunitorRandom(seed);
+			}
+		};
+  }
 
 }
