@@ -8,19 +8,20 @@ import static java.util.Collections.unmodifiableSet;
 import java.util.Set;
 
 import rinde.logistics.pdptw.mas.comm.AbstractCommModel;
-import rinde.logistics.pdptw.mas.comm.BlackboardUser;
 import rinde.sim.core.graph.Point;
 import rinde.sim.pdptw.common.DefaultParcel;
 import rinde.sim.util.SupplierRng;
 import rinde.sim.util.SupplierRng.DefaultSupplierRng;
 
+import com.google.common.base.Optional;
+
 public class SituatedCommModel extends AbstractCommModel<SituatedCommunicator> {
 
-	private double parcelRadius;
+	private double sensingRadius;
 	private final Set<DefaultParcel> unclaimedParcels;
 
-	public SituatedCommModel(long seed, double parcelRadius) {
-		this.parcelRadius = parcelRadius;
+	public SituatedCommModel(long seed, double sensingRadius) {
+		this.sensingRadius = sensingRadius;
 		unclaimedParcels = newLinkedHashSet();
 	}
 
@@ -38,24 +39,42 @@ public class SituatedCommModel extends AbstractCommModel<SituatedCommunicator> {
 			// Release all assigned parcels in order to reallocate them. Put them in unclaimedParcels
 			if(su.getAssignedParcel().isPresent()){
 				unclaimedParcels.add(su.getAssignedParcel().get());
+				su.setNoAssignedParcel();
 			}
 		}
 		
 		for (final SituatedCommunicator su : communicators) {
-			// TODO: give to su all parcels within unclaimedParcels that are within parcelRadius
+			// Give to su all parcels within unclaimedParcels that are within parcelRadius
 			for(final DefaultParcel dp : unclaimedParcels){
-				Point parcelDest = dp.getDestination();
-				
-				// TODO: get a Point which represent the communicator position. Use road model got from init?
-				// TODO: compute distance
-				// TODO: if distance is less than range, add dp to a new collection inside the situatedCommunicator
-				// that represents candidate parcels in range to chose from
-				
 				// TODO: and the source?
 				
+				// Get the parcel destination
+				Point parcelDest = dp.getDestination();
+				// Get a Point which represent the communicator position. Use road model got from init?
+				Point communicatorPosition = su.getPosition();
+				// Compute distance
+				double distance = Point.distance(parcelDest, communicatorPosition);
+				
+				// If distance is less than range, add dp to candidate parcels in range
+				if(distance < sensingRadius){
+					su.addCandidateParcel(dp);
+				}
+				
 			}
-			// TODO: ask su to decide the one parcel to deliver next based on the list it received
-			// TODO: remove the above parcel from unclaimedParcels
+			
+			// TODO: add a step here that does something if the list of candidate parcels is empty.
+			// Ask Rinde what to do, it's ok a vehicle is idle right?
+			
+			// Ask su to decide the one parcel to deliver next based on the list it received
+			Optional<DefaultParcel> nextParcel = su.decideNextParcel();
+			// TODO: what to do if none is selected? 
+			//checkState(nextParcel.isPresent(), "Error! No parcel was selected among the candidates in range!");
+			// Remove the above parcel from unclaimedParcels
+			if (nextParcel.isPresent() ){
+				unclaimedParcels.remove(nextParcel);
+			}
+						
+			
 		}
 		
 		// TODO: if there are still unclaimed parcels, do something (what?)
@@ -95,7 +114,7 @@ public class SituatedCommModel extends AbstractCommModel<SituatedCommunicator> {
 
 	/**
 	 * Lays a claim on the specified {@link DefaultParcel}. This means that this
-	 * parcel is no longer available to other {@link BlackboardUser}s.
+	 * parcel is no longer available to other {@link SituatedCommunicator}s.
 	 * 
 	 * @param claimer
 	 *          The user that claims the parcel.

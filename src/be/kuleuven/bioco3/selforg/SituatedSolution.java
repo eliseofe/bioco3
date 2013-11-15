@@ -32,6 +32,7 @@ import com.google.common.collect.Table.Cell;
 import com.google.common.io.Files;
 
 public class SituatedSolution {
+	
 	private static final String SCENARIO_FILE = "files/scenarios/gendreau06/req_rapide_1_240_24";
 	private static final SupplierRng<Solver> SOLVER_SUPPLIER = MultiVehicleHeuristicSolver
 			.supplier(50, 100);
@@ -46,9 +47,7 @@ public class SituatedSolution {
 				.withThreads(1)
 				.withRandomSeed(1)
 				.addConfiguration(
-						Central.solverConfiguration(MultiVehicleHeuristicSolver
-								.supplier(500, 10000), "-Offline"))
-				.addConfiguration(new TruckConfiguration(SolverRoutePlanner
+						new TruckConfiguration(SolverRoutePlanner
 								.supplier(SOLVER_SUPPLIER), 
 								RandomBidder.supplier(),
 								ImmutableList.of(AuctionCommModel.supplier())))
@@ -57,14 +56,24 @@ public class SituatedSolution {
 								.supplier(SOLVER_SUPPLIER), 
 								SolverBidder.supplier(objFunc, SOLVER_SUPPLIER),
 								ImmutableList.of(AuctionCommModel.supplier())))
+				.addConfiguration(
+						new TruckConfiguration(SolverRoutePlanner
+								.supplier(SOLVER_SUPPLIER),
+								SituatedCommunitorRandom.supplier(),
+								ImmutableList.of(SituatedCommModel.supplier(10)))) // Sensing range
+				.addConfiguration(
+						Central.solverConfiguration(MultiVehicleHeuristicSolver
+								.supplier(500, 10000), "-Offline"))
 				.perform();
 		writeResults(results);
-		double geandreauCost = objFunc.computeCost(results.results.get(0).stats);
-		double randomAuctionCost = objFunc.computeCost(results.results.get(1).stats);
-		double auctionCost = objFunc.computeCost(results.results.get(2).stats);
-		System.out.println("Tony cost: "+geandreauCost);
-		System.out.println("Random cost: "+randomAuctionCost);
-		System.out.println("Auction cost:"+auctionCost);
+		double firstCost = objFunc.computeCost(results.results.get(0).stats);
+		double secondCost = objFunc.computeCost(results.results.get(1).stats);
+		double thirdCost = objFunc.computeCost(results.results.get(2).stats);
+		double fourthCost = objFunc.computeCost(results.results.get(3).stats);
+		System.out.println("Random auction cost: "+firstCost);
+		System.out.println("Auction cost:"+secondCost);
+		System.out.println("Situated cost:"+thirdCost);
+		System.out.println("Tony cost: "+fourthCost);
 	}
 
 	static void writeResults(ExperimentResults results) {
