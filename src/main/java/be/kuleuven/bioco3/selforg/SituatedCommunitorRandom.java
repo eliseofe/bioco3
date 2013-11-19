@@ -11,36 +11,38 @@ import com.google.common.base.Optional;
 
 public class SituatedCommunitorRandom extends SituatedCommunicator {
 
-	private final RandomGenerator rng;
+  private final RandomGenerator rng;
 
-	public SituatedCommunitorRandom(long seed) {
-		rng = new MersenneTwister(seed);
-	}
+  public SituatedCommunitorRandom(long seed) {
+    rng = new MersenneTwister(seed);
+  }
 
-	public Optional<DefaultParcel> decideNextParcel() {
-		Optional<DefaultParcel> result = Optional.absent();
-		int indexToGet = rng.nextInt(candidateParcels.size());
-		int i = 0;
-		for (DefaultParcel dp : candidateParcels) {
-			if (i == indexToGet) {
-				result = Optional.of(dp);
-			}
-			i++;
-		}
-		setAssignedParcel(result);
-		return result;
+  public Optional<DefaultParcel> decideNextParcel() {
+    Optional<DefaultParcel> result = Optional.absent();
+    if (!candidateParcels.isEmpty()) {
+      int indexToGet = rng.nextInt(candidateParcels.size());
+      int i = 0;
+      for (DefaultParcel dp : candidateParcels) {
+	if (i == indexToGet) {
+	  result = Optional.of(dp);
 	}
+	i++;
+      }
+      setAssignedParcel(result);
+    }
+    return result;
+  }
 
-	// not needed
-	public void waitFor(DefaultParcel p) {
-	}
+  // not needed
+  public void waitFor(DefaultParcel p) {
+  }
 
-	public static SupplierRng<SituatedCommunitorRandom> supplier() {
-		return new DefaultSupplierRng<SituatedCommunitorRandom>() {
-			public SituatedCommunitorRandom get(long seed) {
-				return new SituatedCommunitorRandom(seed);
-			}
-		};
-	}
+  public static SupplierRng<SituatedCommunitorRandom> supplier() {
+    return new DefaultSupplierRng<SituatedCommunitorRandom>() {
+      public SituatedCommunitorRandom get(long seed) {
+	return new SituatedCommunitorRandom(seed);
+      }
+    };
+  }
 
 }
