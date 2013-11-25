@@ -1,4 +1,4 @@
-package be.kuleuven.bioco3.selforg;
+package main.java.be.kuleuven.bioco3.selforg;
 
 import static com.google.common.collect.Sets.newLinkedHashSet;
 
@@ -26,7 +26,7 @@ public abstract class SituatedCommunicator implements Communicator {
   private Optional<DefaultParcel> assignedParcel;
   protected final Set<DefaultParcel> candidateParcels;
 
-  public SituatedCommunicator() {
+	public SituatedCommunicator() {
     eventDispatcher = new EventDispatcher(CommunicatorEventType.values());
     scModel = Optional.absent();
     assignedParcel = Optional.absent();
@@ -37,6 +37,10 @@ public abstract class SituatedCommunicator implements Communicator {
     this.rm = rm;
     this.vehicle = v;
   }
+  
+  public Set<DefaultParcel> getCandidateParcels() {
+		return candidateParcels;
+	}
 
   public boolean addCandidateParcel(DefaultParcel candidate) {
     return candidateParcels.add(candidate);
@@ -55,6 +59,11 @@ public abstract class SituatedCommunicator implements Communicator {
     eventDispatcher.dispatchEvent(new Event(CommunicatorEventType.CHANGE, this));
   }
 
+  public void forgetPreviousAssignment() {
+  	this.assignedParcel = Optional.absent();
+  	eventDispatcher.dispatchEvent(new Event(CommunicatorEventType.CHANGE, this));
+  }
+  
   public void setNoAssignedParcel() {
     this.assignedParcel = Optional.absent();
   }
