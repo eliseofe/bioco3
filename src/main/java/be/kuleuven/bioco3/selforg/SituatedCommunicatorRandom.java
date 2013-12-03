@@ -9,11 +9,11 @@ import rinde.sim.util.SupplierRng.DefaultSupplierRng;
 
 import com.google.common.base.Optional;
 
-public class SituatedCommunitorRandom extends SituatedCommunicator {
+public class SituatedCommunicatorRandom extends SituatedCommunicator {
 
 	private final RandomGenerator rng;
 
-	public SituatedCommunitorRandom(long seed) {
+	public SituatedCommunicatorRandom(long seed) {
 		rng = new MersenneTwister(seed);
 	}
 
@@ -37,10 +37,10 @@ public class SituatedCommunitorRandom extends SituatedCommunicator {
 	public void waitFor(DefaultParcel p) {
 	}
 
-	public static SupplierRng<SituatedCommunitorRandom> supplier() {
-		return new DefaultSupplierRng<SituatedCommunitorRandom>() {
-			public SituatedCommunitorRandom get(long seed) {
-				return new SituatedCommunitorRandom(seed);
+	public static SupplierRng<SituatedCommunicatorRandom> supplier() {
+		return new DefaultSupplierRng<SituatedCommunicatorRandom>() {
+			public SituatedCommunicatorRandom get(long seed) {
+				return new SituatedCommunicatorRandom(seed);
 			}
 		};
 	}

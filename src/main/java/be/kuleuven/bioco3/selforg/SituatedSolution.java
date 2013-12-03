@@ -8,7 +8,6 @@ import java.util.Set;
 
 import rinde.logistics.pdptw.mas.TruckConfiguration;
 import rinde.logistics.pdptw.mas.comm.AuctionCommModel;
-import rinde.logistics.pdptw.mas.comm.RandomBidder;
 import rinde.logistics.pdptw.mas.comm.SolverBidder;
 import rinde.logistics.pdptw.mas.route.SolverRoutePlanner;
 import rinde.logistics.pdptw.solver.MultiVehicleHeuristicSolver;
@@ -45,22 +44,26 @@ public class SituatedSolution {
 				.repeat(5)
 				.withThreads(1)
 				.withRandomSeed(1)
-				.addConfiguration(
-						new TruckConfiguration(SolverRoutePlanner.supplier(SOLVER_SUPPLIER),
-								RandomBidder.supplier(), 
-								ImmutableList.of(AuctionCommModel.supplier())))
+//				.addConfiguration(
+//						new TruckConfiguration(SolverRoutePlanner.supplier(SOLVER_SUPPLIER),
+//								RandomBidder.supplier(), 
+//								ImmutableList.of(AuctionCommModel.supplier())))
 				.addConfiguration(
 						new TruckConfiguration(SolverRoutePlanner.supplier(SOLVER_SUPPLIER), 
 								SolverBidder.supplier(objFunc, SOLVER_SUPPLIER_INTERNAL),
 								ImmutableList.of(AuctionCommModel.supplier())))
+//				.addConfiguration(
+//						new TruckConfiguration(SolverRoutePlanner.supplierWithoutCurrentRoutes(SOLVER_SUPPLIER),
+//								SituatedCommunitorRandom.supplier(), 
+//								ImmutableList.of(SituatedCommModelFixedRadius.supplier(2)))) // Sensing
 				.addConfiguration(
 						new TruckConfiguration(SolverRoutePlanner.supplierWithoutCurrentRoutes(SOLVER_SUPPLIER),
-								SituatedCommunitorRandom.supplier(), 
-								ImmutableList.of(SituatedCommModelFixedRadius.supplier(2)))) // Sensing
+								SituatedCommunicatorRandom.supplier(), 
+								ImmutableList.of(SituatedCommModelClosestN.supplier(10)))) // Number of closest parcels
 				.addConfiguration(
 						new TruckConfiguration(SolverRoutePlanner.supplierWithoutCurrentRoutes(SOLVER_SUPPLIER),
-								SituatedCommunitorRandom.supplier(), 
-								ImmutableList.of(SituatedCommModelClosestN.supplier(1)))) // Number of closest parcels
+								SituatedCommunicatorSolver.supplier(objFunc, SOLVER_SUPPLIER_INTERNAL), 
+								ImmutableList.of(SituatedCommModelClosestN.supplier(10)))) // Number of closest parcels
 				// range
 				// .addConfiguration(
 				// Central.solverConfiguration(MultiVehicleHeuristicSolver.supplier(500, 10000), "-Offline"))
