@@ -28,7 +28,6 @@ public class SituatedCommunicatorRandom extends SituatedCommunicator {
 				}
 				i++;
 			}
-			setAssignedParcel(result);
 		}
 		return result;
 	}

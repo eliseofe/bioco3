@@ -66,8 +66,9 @@ public abstract class SituatedCommModel extends AbstractCommModel<SituatedCommun
 		// checkState(nextParcel.isPresent(),
 		// "Error! No parcel was selected among the candidates in range!");
 		// Remove the above parcel from unclaimedParcels
-		if (nextParcel.isPresent()) {
-			checkArgument(unassignedParcels.contains(nextParcel.get()), "Parcel %s should still be in the list.", nextParcel.get());
+		if (nextParcel.isPresent() && unassignedParcels.contains(nextParcel.get())) {
+			su.setAssignedParcel(nextParcel);
+			//checkArgument(unassignedParcels.contains(nextParcel.get()), "Parcel %s should still be in the list.", nextParcel.get());
 			unassignedParcels.remove(nextParcel.get());
 			checkArgument(!unassignedParcels.contains(nextParcel.get()), "Parcel %s should be removed.", nextParcel.get());
 			//System.out.println("Removed parcel " + nextParcel.get() + " assigned to " +su);

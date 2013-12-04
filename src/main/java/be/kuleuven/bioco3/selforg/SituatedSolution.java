@@ -8,6 +8,7 @@ import java.util.Set;
 
 import rinde.logistics.pdptw.mas.TruckConfiguration;
 import rinde.logistics.pdptw.mas.comm.AuctionCommModel;
+import rinde.logistics.pdptw.mas.comm.RandomBidder;
 import rinde.logistics.pdptw.mas.comm.SolverBidder;
 import rinde.logistics.pdptw.mas.route.SolverRoutePlanner;
 import rinde.logistics.pdptw.solver.MultiVehicleHeuristicSolver;
@@ -39,23 +40,23 @@ public class SituatedSolution {
 		Gendreau06ObjectiveFunction objFunc = new Gendreau06ObjectiveFunction();
 		ExperimentResults results = Experiment
 				.build(objFunc)
-//				.showGui()
+				//.showGui()
 				.addScenario(Gendreau06Parser.parse(SCENARIO_FILE))
 				.repeat(5)
 				.withThreads(1)
 				.withRandomSeed(1)
-//				.addConfiguration(
-//						new TruckConfiguration(SolverRoutePlanner.supplier(SOLVER_SUPPLIER),
-//								RandomBidder.supplier(), 
-//								ImmutableList.of(AuctionCommModel.supplier())))
+				.addConfiguration(
+						new TruckConfiguration(SolverRoutePlanner.supplier(SOLVER_SUPPLIER),
+								RandomBidder.supplier(), 
+								ImmutableList.of(AuctionCommModel.supplier())))
 				.addConfiguration(
 						new TruckConfiguration(SolverRoutePlanner.supplier(SOLVER_SUPPLIER), 
 								SolverBidder.supplier(objFunc, SOLVER_SUPPLIER_INTERNAL),
 								ImmutableList.of(AuctionCommModel.supplier())))
-//				.addConfiguration(
-//						new TruckConfiguration(SolverRoutePlanner.supplierWithoutCurrentRoutes(SOLVER_SUPPLIER),
-//								SituatedCommunitorRandom.supplier(), 
-//								ImmutableList.of(SituatedCommModelFixedRadius.supplier(2)))) // Sensing
+				.addConfiguration(
+						new TruckConfiguration(SolverRoutePlanner.supplierWithoutCurrentRoutes(SOLVER_SUPPLIER),
+								SituatedCommunicatorRandom.supplier(), 
+								ImmutableList.of(SituatedCommModelFixedRadius.supplier(2)))) // Sensing
 				.addConfiguration(
 						new TruckConfiguration(SolverRoutePlanner.supplierWithoutCurrentRoutes(SOLVER_SUPPLIER),
 								SituatedCommunicatorRandom.supplier(), 

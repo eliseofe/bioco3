@@ -14,28 +14,35 @@ import rinde.sim.event.EventDispatcher;
 import rinde.sim.event.Listener;
 import rinde.sim.pdptw.common.DefaultParcel;
 import rinde.sim.pdptw.common.DefaultVehicle;
+import rinde.sim.pdptw.common.PDPRoadModel;
 
 import com.google.common.base.Optional;
 
 public abstract class SituatedCommunicator implements Communicator {
 
   private Optional<SituatedCommModel> scModel;
-  private RoadModel rm;
-  private DefaultVehicle vehicle;
+  protected Optional<PDPRoadModel> rm;
+  protected Optional <DefaultVehicle> vehicle;
   private final EventDispatcher eventDispatcher;
   private Optional<DefaultParcel> assignedParcel;
   protected final Set<DefaultParcel> candidateParcels;
+  protected Optional <PDPModel> pdpm;
 
 	public SituatedCommunicator() {
     eventDispatcher = new EventDispatcher(CommunicatorEventType.values());
     scModel = Optional.absent();
     assignedParcel = Optional.absent();
     candidateParcels = newLinkedHashSet();
+    rm = Optional.absent();
+    pdpm = Optional.absent();
+    vehicle = Optional.absent();
   }
 
   public void init(RoadModel rm, PDPModel pm, DefaultVehicle v) {
-    this.rm = rm;
-    this.vehicle = v;
+    this.rm = Optional.of((PDPRoadModel) rm);
+    this.vehicle = Optional.of(v);
+    this.pdpm = Optional.of(pm);
+    afterInit();
   }
   
   public Set<DefaultParcel> getCandidateParcels() {
@@ -93,9 +100,11 @@ public abstract class SituatedCommunicator implements Communicator {
   }
 
   public Point getPosition() {
-    return rm.getPosition(vehicle);
+    return rm.get().getPosition(vehicle.get());
   }
 
   public abstract Optional<DefaultParcel> decideNextParcel();
+  
+  protected void afterInit() {}
 
 }
