@@ -1,4 +1,4 @@
-package main.java.be.kuleuven.bioco3.selforg;
+package be.kuleuven.bioco3.selforg;
 
 import java.util.ArrayList;
 import java.util.Collections;

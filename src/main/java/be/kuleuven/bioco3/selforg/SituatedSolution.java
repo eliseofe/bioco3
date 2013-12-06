@@ -1,4 +1,4 @@
-package main.java.be.kuleuven.bioco3.selforg;
+package be.kuleuven.bioco3.selforg;
 
 import static com.google.common.base.Preconditions.checkArgument;
 
@@ -19,6 +19,8 @@ import rinde.sim.pdptw.gendreau06.Gendreau06ObjectiveFunction;
 import rinde.sim.pdptw.gendreau06.Gendreau06Scenarios;
 import rinde.sim.pdptw.gendreau06.GendreauProblemClass;
 import rinde.sim.util.SupplierRng;
+import be.kuleuven.bioco3.selforg.SituatedCommModelFixedRadius;
+import be.kuleuven.bioco3.selforg.SituatedCommunicatorSolver;
 
 import com.google.common.base.Charsets;
 import com.google.common.collect.HashBasedTable;

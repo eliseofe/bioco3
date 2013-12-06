@@ -1,4 +1,4 @@
-package main.java.be.kuleuven.bioco3.selforg;
+package be.kuleuven.bioco3.selforg;
 
 import static com.google.common.collect.Sets.newLinkedHashSet;
 
@@ -17,6 +17,7 @@ import rinde.sim.pdptw.common.DefaultParcel;
 import rinde.sim.pdptw.common.ObjectiveFunction;
 import rinde.sim.util.SupplierRng;
 import rinde.sim.util.SupplierRng.DefaultSupplierRng;
+import be.kuleuven.bioco3.selforg.SituatedCommunicator;
 
 import com.google.common.base.Optional;
 

@@ -1,4 +1,4 @@
-package main.java.be.kuleuven.bioco3.selforg;
+package be.kuleuven.bioco3.selforg;
 
 import org.apache.commons.math3.random.MersenneTwister;
 import org.apache.commons.math3.random.RandomGenerator;
