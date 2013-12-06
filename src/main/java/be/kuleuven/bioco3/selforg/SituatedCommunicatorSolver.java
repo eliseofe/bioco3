@@ -22,77 +22,79 @@ import com.google.common.base.Optional;
 
 public class SituatedCommunicatorSolver extends SituatedCommunicator implements SimulatorUser {
 
-  private final Solver solver;
-  private Optional<SimulationSolver> solverHandle;
-  protected Optional<SimulatorAPI> simulator;
-	
-	 public SituatedCommunicatorSolver(ObjectiveFunction objFunc, Solver s) {
-	    solver = s;
-	    solverHandle = Optional.absent();
-	    simulator = Optional.absent();
-	  }
-	
+	private final Solver solver;
+	private Optional<SimulationSolver> solverHandle;
+	protected Optional<SimulatorAPI> simulator;
+
+	public SituatedCommunicatorSolver(ObjectiveFunction objFunc, Solver s) {
+		solver = s;
+		solverHandle = Optional.absent();
+		simulator = Optional.absent();
+	}
+
 	// not needed
 	public void waitFor(DefaultParcel p) {
 	}
 
 	@Override
 	public Optional<DefaultParcel> decideNextParcel() {
-			
+
 		Optional<DefaultParcel> result = Optional.absent();
-		DefaultParcel destParcel = rm.get().getDestinationToParcel((MovingRoadUser) vehicle.get());
-		final Set<DefaultParcel> solverParcels = newLinkedHashSet(candidateParcels);
-		
-		if(destParcel != null){
-			if(!solverParcels.contains(destParcel) && pdpm.get().getParcelState(destParcel) != ParcelState.IN_CARGO){
-				solverParcels.add(destParcel); // TODO: Why Rinde says to do it? Ask him
+
+		if (candidateParcels.size() > 0) {
+
+			DefaultParcel destParcel = rm.get().getDestinationToParcel((MovingRoadUser) vehicle.get());
+			final Set<DefaultParcel> solverParcels = newLinkedHashSet(candidateParcels);
+
+			if (destParcel != null) {
+				if (!solverParcels.contains(destParcel) && pdpm.get().getParcelState(destParcel) != ParcelState.IN_CARGO) {
+					solverParcels.add(destParcel); // TODO: Why Rinde says to do it? Ask him
+				}
 			}
-		}
-		
-		if(solverParcels.size() > 0){
-			//System.out.println("Vehicle " + vehicle.get() + " Solving for "+solverParcels.size());
-//			for(DefaultParcel p : solverParcels){
-//				System.out.println("  "+p);
-//			}
+
+			// System.out.println("Vehicle " + vehicle.get() + " Solving for "+solverParcels.size());
+			// for(DefaultParcel p : solverParcels){
+			// System.out.println("  "+p);
+			// }
 			SolveArgs args = SolveArgs.create().noCurrentRoutes().useParcels(solverParcels);
 			final Queue<DefaultParcel> newRoute = solverHandle.get().solve(args).get(0);
 			result = Optional.of(newRoute.peek());
-			//System.out.println("  Result: " + result.get());
+			// System.out.println("  Result: " + result.get());
 		}
 		return result;
 	}
-	
+
 	public static SupplierRng<SituatedCommunicatorSolver> supplier(
-      final ObjectiveFunction objFunc,
-      final SupplierRng<? extends Solver> solverSupplier) {
-    return new DefaultSupplierRng<SituatedCommunicatorSolver>() {
-      public SituatedCommunicatorSolver get(long seed) {
-        return new SituatedCommunicatorSolver(objFunc, solverSupplier.get(seed));
-      }
+			final ObjectiveFunction objFunc,
+			final SupplierRng<? extends Solver> solverSupplier) {
+		return new DefaultSupplierRng<SituatedCommunicatorSolver>() {
+			public SituatedCommunicatorSolver get(long seed) {
+				return new SituatedCommunicatorSolver(objFunc, solverSupplier.get(seed));
+			}
 
-      @Override
-      public String toString() {
-        return super.toString() + "-" + solverSupplier.toString();
-      }
-    };
-  }
-	
-  protected void afterInit() {
-    initSolver();
-  }
+			@Override
+			public String toString() {
+				return super.toString() + "-" + solverSupplier.toString();
+			}
+		};
+	}
 
-  public void setSimulator(SimulatorAPI api) {
-    simulator = Optional.of(api);
-    initSolver();
-  }
+	protected void afterInit() {
+		initSolver();
+	}
 
-  private void initSolver() {
-    if (simulator.isPresent() && rm.isPresent()
-        && !solverHandle.isPresent()) {
-      solverHandle = Optional.of(Solvers.solverBuilder(solver)
-          .with(rm.get()).with(pdpm.get()).with(simulator.get())
-          .with(vehicle.get()).buildSingle());
-    }
-  }
+	public void setSimulator(SimulatorAPI api) {
+		simulator = Optional.of(api);
+		initSolver();
+	}
+
+	private void initSolver() {
+		if (simulator.isPresent() && rm.isPresent()
+				&& !solverHandle.isPresent()) {
+			solverHandle = Optional.of(Solvers.solverBuilder(solver)
+					.with(rm.get()).with(pdpm.get()).with(simulator.get())
+					.with(vehicle.get()).buildSingle());
+		}
+	}
 
 }
