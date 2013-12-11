@@ -1,14 +1,9 @@
 package be.kuleuven.bioco3.selforg;
 
-import static com.google.common.collect.Sets.newLinkedHashSet;
-
 import java.util.Queue;
-import java.util.Set;
 
 import rinde.sim.core.SimulatorAPI;
 import rinde.sim.core.SimulatorUser;
-import rinde.sim.core.model.pdp.PDPModel.ParcelState;
-import rinde.sim.core.model.road.MovingRoadUser;
 import rinde.sim.pdptw.central.Solver;
 import rinde.sim.pdptw.central.Solvers;
 import rinde.sim.pdptw.central.Solvers.SimulationSolver;
@@ -17,7 +12,6 @@ import rinde.sim.pdptw.common.DefaultParcel;
 import rinde.sim.pdptw.common.ObjectiveFunction;
 import rinde.sim.util.SupplierRng;
 import rinde.sim.util.SupplierRng.DefaultSupplierRng;
-import be.kuleuven.bioco3.selforg.SituatedCommunicator;
 
 import com.google.common.base.Optional;
 
@@ -44,20 +38,7 @@ public class SituatedCommunicatorSolver extends SituatedCommunicator implements 
 
 		if (candidateParcels.size() > 0) {
 
-			DefaultParcel destParcel = rm.get().getDestinationToParcel((MovingRoadUser) vehicle.get());
-			final Set<DefaultParcel> solverParcels = newLinkedHashSet(candidateParcels);
-
-			if (destParcel != null) {
-				if (!solverParcels.contains(destParcel) && pdpm.get().getParcelState(destParcel) != ParcelState.IN_CARGO) {
-					solverParcels.add(destParcel); // TODO: Why Rinde says to do it? Ask him
-				}
-			}
-
-			// System.out.println("Vehicle " + vehicle.get() + " Solving for "+solverParcels.size());
-			// for(DefaultParcel p : solverParcels){
-			// System.out.println("  "+p);
-			// }
-			SolveArgs args = SolveArgs.create().noCurrentRoutes().useParcels(solverParcels);
+			SolveArgs args = SolveArgs.create().noCurrentRoutes().useParcels(candidateParcels);
 			final Queue<DefaultParcel> newRoute = solverHandle.get().solve(args).get(0);
 			result = Optional.of(newRoute.peek());
 			// System.out.println("  Result: " + result.get());

@@ -46,46 +46,38 @@ public class SituatedSolution {
 				.build(objFunc)
 				// .addScenario(Gendreau06Parser.parse(SCENARIO_FILE))
 				.addScenarioProvider(onlineScenarios)
-			//.showGui()
+				// .showGui()
 				.repeat(5)
 				.withThreads(20)
 				.withRandomSeed(1)
-				 .addConfiguration(
-				 new TruckConfiguration(RandomRoutePlanner.supplier(),
-				 RandomBidder.supplier(),
-				 ImmutableList.of(AuctionCommModel.supplier())))
-				 .addConfiguration(
-				 new TruckConfiguration(SolverRoutePlanner.supplier(SOLVER_SUPPLIER),
-				 RandomBidder.supplier(),
-				 ImmutableList.of(AuctionCommModel.supplier())))
-				 .addConfiguration(
-				 new TruckConfiguration(SolverRoutePlanner.supplier(SOLVER_SUPPLIER),
-				 SolverBidder.supplier(objFunc, SOLVER_SUPPLIER_INTERNAL),
-				 ImmutableList.of(AuctionCommModel.supplier())))
-				 .addConfiguration(
-				 new TruckConfiguration(SolverRoutePlanner.supplierWithoutCurrentRoutes(SOLVER_SUPPLIER),
-				 SituatedCommunicatorRandom.supplier(),
-				 ImmutableList.of(SituatedCommModelFixedRadius.supplier(10)))) // Sensing
-				 .addConfiguration(
-				 new TruckConfiguration(SolverRoutePlanner.supplierWithoutCurrentRoutes(SOLVER_SUPPLIER),
-				 SituatedCommunicatorRandom.supplier(),
-				 ImmutableList.of(SituatedCommModelClosestN.supplier(10)))) // Number of closest parcels
-				 .addConfiguration(
-				 new TruckConfiguration(SolverRoutePlanner.supplierWithoutCurrentRoutes(SOLVER_SUPPLIER),
-				 SituatedCommunicatorSolver.supplier(objFunc, SOLVER_SUPPLIER_INTERNAL),
-				 ImmutableList.of(SituatedCommModelClosestN.supplier(5)))) // Number of closest parcels
-				 .addConfiguration(
-				 new TruckConfiguration(SolverRoutePlanner.supplierWithoutCurrentRoutes(SOLVER_SUPPLIER),
-				 SituatedCommunicatorSolver.supplier(objFunc, SOLVER_SUPPLIER_INTERNAL),
-				 ImmutableList.of(SituatedCommModelClosestN.supplier(10)))) // Number of closest parcels
-				 .addConfiguration(
-				 new TruckConfiguration(SolverRoutePlanner.supplierWithoutCurrentRoutes(SOLVER_SUPPLIER),
-				 SituatedCommunicatorSolver.supplier(objFunc, SOLVER_SUPPLIER_INTERNAL),
-				 ImmutableList.of(SituatedCommModelClosestN.supplier(15)))) // Number of closest parcels
-//				.addConfiguration(
-//						new TruckConfiguration(SolverRoutePlanner.supplierWithoutCurrentRoutes(SOLVER_SUPPLIER),
-//								SituatedCommunicatorSolver.supplier(objFunc, SOLVER_SUPPLIER_INTERNAL),
-//								ImmutableList.of(SituatedCommModelFixedRadius.supplier(5)))) // Radius range
+				.addConfiguration(
+						new TruckConfiguration(RandomRoutePlanner.supplier(),
+								RandomBidder.supplier(),
+								ImmutableList.of(AuctionCommModel.supplier())))
+				.addConfiguration(
+						new TruckConfiguration(SolverRoutePlanner.supplier(SOLVER_SUPPLIER),
+								RandomBidder.supplier(),
+								ImmutableList.of(AuctionCommModel.supplier())))
+				.addConfiguration(
+						new TruckConfiguration(SolverRoutePlanner.supplier(SOLVER_SUPPLIER),
+								SolverBidder.supplier(objFunc, SOLVER_SUPPLIER_INTERNAL),
+								ImmutableList.of(AuctionCommModel.supplier())))
+				.addConfiguration(
+						new TruckConfiguration(SolverRoutePlanner.supplierWithoutCurrentRoutes(SOLVER_SUPPLIER),
+								SituatedCommunicatorRandom.supplier(),
+								ImmutableList.of(SituatedCommModelFixedRadius.supplier(10)))) // Sensing
+				.addConfiguration(
+						new TruckConfiguration(SolverRoutePlanner.supplierWithoutCurrentRoutes(SOLVER_SUPPLIER),
+								SituatedCommunicatorRandom.supplier(),
+								ImmutableList.of(SituatedCommModelClosestN.supplier(10)))) // Number of closest parcels
+				.addConfiguration(
+						new TruckConfiguration(SolverRoutePlanner.supplierWithoutCurrentRoutes(SOLVER_SUPPLIER),
+								SituatedCommunicatorSolver.supplier(objFunc, SOLVER_SUPPLIER_INTERNAL),
+								ImmutableList.of(SituatedCommModelClosestN.supplier(10)))) // Number of closest parcels
+				// .addConfiguration(
+				// new TruckConfiguration(SolverRoutePlanner.supplierWithoutCurrentRoutes(SOLVER_SUPPLIER),
+				// SituatedCommunicatorSolver.supplier(objFunc, SOLVER_SUPPLIER_INTERNAL),
+				// ImmutableList.of(SituatedCommModelFixedRadius.supplier(5)))) // Radius range
 				// .addConfiguration(
 				// Central.solverConfiguration(MultiVehicleHeuristicSolver.supplier(500, 10000), "-Offline"))
 				.perform();
@@ -96,8 +88,8 @@ public class SituatedSolution {
 	// TODO: for delivery decision making, you can use a >1 sized (k) list of assigned parcels instead of one (the solver will figure things out automagically)
 	// TODO: try co change the parameters of the solver, you should lower them in principle
 	// TODO: Rinde is solving the solver (conversion) problem
-	// TODO: run runs with different number of vehicles and different k values for the above algorithm 
-	
+	// TODO: run runs with different number of vehicles and different k values for the above algorithm
+
 	static void writeResults(ExperimentResults results) {
 
 		final Table<MASConfiguration, ProblemClass, StringBuilder> table = HashBasedTable.create();
