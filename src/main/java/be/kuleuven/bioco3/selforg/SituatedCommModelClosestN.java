@@ -6,7 +6,6 @@ import java.util.Comparator;
 import java.util.List;
 
 import rinde.sim.core.graph.Point;
-import rinde.sim.core.model.pdp.PDPModel.VehicleState;
 import rinde.sim.pdptw.common.DefaultParcel;
 import rinde.sim.util.SupplierRng;
 import rinde.sim.util.SupplierRng.DefaultSupplierRng;
@@ -18,35 +17,6 @@ public class SituatedCommModelClosestN extends SituatedCommModel {
 	public SituatedCommModelClosestN(double seed, int n) {
 		super();
 		nClosestParcels = n;
-	}
-
-	@Override
-	protected void performDecisionMaking() {
-		releaseUncommittedParcels();
-		for (final SituatedCommunicator su : communicators) {
-			if (su.pdpm.get().getVehicleState(su.vehicle.get()) == VehicleState.IDLE) {
-				final Point referencePos = su.getPosition();
-				List<DefaultParcel> listParcels = new ArrayList<DefaultParcel>(unassignedParcels);
-
-				Collections.sort(listParcels, new Comparator<DefaultParcel>() {
-					public int compare(DefaultParcel d1, DefaultParcel d2) {
-						Point d1Pos = d1.getPickupLocation();
-						Point d2Pos = d2.getPickupLocation();
-						double distanceD1 = Point.distance(referencePos, d1Pos);
-						double distanceD2 = Point.distance(referencePos, d2Pos);
-						return (int) Math.signum(distanceD1 - distanceD2);
-					}
-				});
-
-				int numOfParcels = listParcels.size() < nClosestParcels ? listParcels.size() : nClosestParcels;
-				for (int i = 0; i < numOfParcels; i++) {
-					su.addCandidateParcel(listParcels.get(i));
-				}
-
-				commitToParcel(su);
-			}
-		}
-
 	}
 
 	/**
@@ -63,6 +33,28 @@ public class SituatedCommModelClosestN extends SituatedCommModel {
 				return super.toString() + "-" + nClosestParcels;
 			}
 		};
+	}
+
+	@Override
+	protected void fillCandidateParcelList(SituatedCommunicator su) {
+		final Point referencePos = su.getPosition();
+		List<DefaultParcel> listParcels = new ArrayList<DefaultParcel>(unassignedParcels);
+
+		Collections.sort(listParcels, new Comparator<DefaultParcel>() {
+			public int compare(DefaultParcel d1, DefaultParcel d2) {
+				Point d1Pos = d1.getPickupLocation();
+				Point d2Pos = d2.getPickupLocation();
+				double distanceD1 = Point.distance(referencePos, d1Pos);
+				double distanceD2 = Point.distance(referencePos, d2Pos);
+				return (int) Math.signum(distanceD1 - distanceD2);
+			}
+		});
+
+		int numOfParcels = listParcels.size() < nClosestParcels ? listParcels.size() : nClosestParcels;
+		for (int i = 0; i < numOfParcels; i++) {
+			su.addCandidateParcel(listParcels.get(i));
+		}
+		
 	}
 
 }

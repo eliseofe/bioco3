@@ -65,7 +65,7 @@ public class SituatedSolution {
 				.addConfiguration(
 						new TruckConfiguration(SolverRoutePlanner.supplierWithoutCurrentRoutes(SOLVER_SUPPLIER),
 								SituatedCommunicatorRandom.supplier(),
-								ImmutableList.of(SituatedCommModelFixedRadius.supplier(10)))) // Sensing
+								ImmutableList.of(SituatedCommModelFixedRadius.supplier(3)))) // Sensing
 				.addConfiguration(
 						new TruckConfiguration(SolverRoutePlanner.supplierWithoutCurrentRoutes(SOLVER_SUPPLIER),
 								SituatedCommunicatorRandom.supplier(),
@@ -74,10 +74,10 @@ public class SituatedSolution {
 						new TruckConfiguration(SolverRoutePlanner.supplierWithoutCurrentRoutes(SOLVER_SUPPLIER),
 								SituatedCommunicatorSolver.supplier(objFunc, SOLVER_SUPPLIER_INTERNAL),
 								ImmutableList.of(SituatedCommModelClosestN.supplier(10)))) // Number of closest parcels
-				// .addConfiguration(
-				// new TruckConfiguration(SolverRoutePlanner.supplierWithoutCurrentRoutes(SOLVER_SUPPLIER),
-				// SituatedCommunicatorSolver.supplier(objFunc, SOLVER_SUPPLIER_INTERNAL),
-				// ImmutableList.of(SituatedCommModelFixedRadius.supplier(5)))) // Radius range
+				.addConfiguration(
+						new TruckConfiguration(SolverRoutePlanner.supplierWithoutCurrentRoutes(SOLVER_SUPPLIER),
+								SituatedCommunicatorSolver.supplier(objFunc, SOLVER_SUPPLIER_INTERNAL),
+								ImmutableList.of(SituatedCommModelFixedRadius.supplier(3)))) // Radius range
 				// .addConfiguration(
 				// Central.solverConfiguration(MultiVehicleHeuristicSolver.supplier(500, 10000), "-Offline"))
 				.perform();

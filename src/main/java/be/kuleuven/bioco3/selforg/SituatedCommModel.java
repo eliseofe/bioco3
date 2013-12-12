@@ -76,7 +76,20 @@ public abstract class SituatedCommModel extends AbstractCommModel<SituatedCommun
 		
 	}
 
-	protected abstract void performDecisionMaking();
+	protected void performDecisionMaking(){
+		releaseUncommittedParcels();
+		for (final SituatedCommunicator su : communicators) {
+			//if (su.pdpm.get().getVehicleState(su.vehicle.get()) == VehicleState.IDLE) {
+				fillCandidateParcelList(su);
+				// TODO: add a step here that does something if the list of candidate parcels is empty.
+				// Ask Rinde what to do, it's ok a vehicle is idle right?
+				commitToParcel(su);
+			//}
+		}
+		// TODO: if there are still unclaimed parcels, do something (what?)		
+	}
+	
+	protected abstract void fillCandidateParcelList(SituatedCommunicator su);
 
 	/**
 	 * Lays a claim on the specified {@link DefaultParcel}. This means that this
